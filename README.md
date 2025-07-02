@@ -1,7 +1,5 @@
 # Celeris
-***
 
-## Task
 A lightweight Redis-compatible in-memory data store written in C++. Supports strings, lists, and hashes, full Redis Serialization Protocol (RESP) parsing, multi-client concurrency, and periodic disk persistence.
 
 ---
@@ -166,5 +164,10 @@ Refer to [Concepts,UseCases&Tests.md](Concepts,UseCases&Tests.md) for a detailed
 ## Testing
 
 You can verify functionality interactively or via scripts. See the test examples in `Concepts,UseCases&Tests.md` or use the provided `test_all.sh` script for end‑to‑end validation.
+
+---
+## Performance Measurement
+
+You can benchmark the performance using `redis-benchmark -c 50 -n 100000`. This command simulates a workload of 50 simultaneous clients sending a total of 100,000 requests to the Redis server. This allows you to evaluate the performance of your Redis instance under a specific level of load and concurrency. The benchmark will typically measure and report metrics such as requests per second (throughput) and latency for various Redis commands.
 
 ---
