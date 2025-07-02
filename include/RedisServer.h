@@ -4,7 +4,8 @@
 #include <string>
 #include <atomic>
 
-class RedisServer{
+class RedisServer
+{
 public:
     RedisServer(int port);
     void run();
@@ -14,5 +15,9 @@ private:
     int port;
     int server_socket;
     std::atomic<bool> running;
+
+    // signal handling for graceful shutdown (ctrl + c)
+    void setupSignalHandler();
 };
+
 #endif
