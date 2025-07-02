@@ -1,5 +1,5 @@
 MyRedisCLI
-my_redis_server
+my_redis_server.o
 dump.my_rdb
 
 build
