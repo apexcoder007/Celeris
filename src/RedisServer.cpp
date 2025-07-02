@@ -14,7 +14,8 @@
 // Global pointer for signal handling
 static RedisServer *globalServer = nullptr;
 
-void signalHandler(int signum){
+void signalHandler(int signum)
+{
     if (globalServer)
     {
         std::cout << "\nCaught signal " << signum << ", shutting down...\n";
@@ -23,18 +24,22 @@ void signalHandler(int signum){
     exit(signum);
 }
 
-void RedisServer::setupSignalHandler(){
+void RedisServer::setupSignalHandler()
+{
     signal(SIGINT, signalHandler);
 }
 
-RedisServer::RedisServer(int port) : port(port), server_socket(-1), running(true){
+RedisServer::RedisServer(int port) : port(port), server_socket(-1), running(true)
+{
     globalServer = this;
     setupSignalHandler();
 }
 
-void RedisServer::shutdown(){
+void RedisServer::shutdown()
+{
     running = false;
-    if (server_socket != -1){
+    if (server_socket != -1)
+    {
         // Before shutdown, persist the database
         if (RedisDatabase::getInstance().dump("dump.my_rdb"))
             std::cout << "Database Dumped to dump.my_rdb\n";
@@ -45,7 +50,8 @@ void RedisServer::shutdown(){
     std::cout << "Server Shutdown Complete!\n";
 }
 
-void RedisServer::run(){
+void RedisServer::run()
+{
     server_socket = socket(AF_INET, SOCK_STREAM, 0);
     if (server_socket < 0)
     {
@@ -61,12 +67,14 @@ void RedisServer::run(){
     serverAddr.sin_port = htons(port);
     serverAddr.sin_addr.s_addr = INADDR_ANY;
 
-    if (bind(server_socket, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) < 0){
+    if (bind(server_socket, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) < 0)
+    {
         std::cerr << "Error Binding Server Socket\n";
         return;
     }
 
-    if (listen(server_socket, 10) < 0){
+    if (listen(server_socket, 10) < 0)
+    {
         std::cerr << "Error Listening On Server Socket\n";
         return;
     }
@@ -76,15 +84,18 @@ void RedisServer::run(){
     std::vector<std::thread> threads;
     RedisCommandHandler cmdHandler;
 
-    while (running){
+    while (running)
+    {
         int client_socket = accept(server_socket, nullptr, nullptr);
-        if (client_socket < 0){
+        if (client_socket < 0)
+        {
             if (running)
                 std::cerr << "Error Accepting Client Connection\n";
             break;
         }
 
-        threads.emplace_back([client_socket, &cmdHandler](){
+        threads.emplace_back([client_socket, &cmdHandler]()
+                             {
             char buffer[1024];
             while (true) {
                 memset(buffer, 0, sizeof(buffer));
@@ -97,7 +108,8 @@ void RedisServer::run(){
             close(client_socket); });
     }
 
-    for (auto &t : threads){
+    for (auto &t : threads)
+    {
         if (t.joinable())
             t.join();
     }
